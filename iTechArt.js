@@ -1,3 +1,4 @@
+// input
 const input = [
   "https://test.com/connections/555",  
   "https://test.com/connections/555?locale=en",
@@ -5,11 +6,23 @@ const input = [
   "https://test.com/connections/777{?q}",
   "https://test.com/connections/777{?locale}",
   "https://test.com/connections/999",
-  "https://test.com/connections/111"
 ];
 
-function func(connectionUrls) {
+ const extractIdFromLink = (link, regex) => {
+    
+    if(typeof link !== 'string') {
+      throw new Error('first argument must be a string');
+    }
+   
+    if(!(regex instanceof RegExp)) {
+      throw new Error('second argument must be a regex');
+    }
+    
+    return link.match(regex);
+  }
+  
   const reducer = (accumulator, currentValue) => { // accumulator = {} when executed first time
+    
     if(accumulator[currentValue]) { 
       accumulator[currentValue]+=1
     } else {
@@ -17,11 +30,17 @@ function func(connectionUrls) {
     }
     return accumulator
   }
- 
-  return connectionUrls.map(item => item.match(/\d+/)[0]).reduce(reducer,{})  
+
+function func(connectionUrls) {
+  
+  if(!Array.isArray(connectionUrls)) {
+    throw new Error('input must be an array') 
+  }
+  
+  return connectionUrls.map(link => extractIdFromLink(link, /\d+/)[0]).reduce(reducer, {})  
 }
 
-// What solution is easy but I got stuck on the interview. All guys should refresh their knowledge
+// The task was not difficult but I got stuck on the interview. All guys should refresh their knowledge
 // about regex and reduce method
 
 // Aliaksandr Yanushkevich 17.02.2021
